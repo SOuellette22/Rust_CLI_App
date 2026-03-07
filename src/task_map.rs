@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use std::fs;
 use std::fs::File;
+use std::path::Path;
 use crate::task::Task;
 
 /// A structure to hold a map of tasks, allowing for easy retrieval and management.
@@ -36,6 +37,14 @@ impl TaskMap {
     /// Loads tasks from a JSON file and adds them to the TaskMap. The JSON file should contain an array of tasks.
     pub fn load(&mut self, filename: &str) -> Result<(), Box<dyn std::error::Error>> {
 
+        // Check if the file exists. If it does not, create it and return early to avoid deserialization errors.
+        if !Path::new(filename).exists() {
+            // If the file does not exist, create it and return early
+            println!("File '{}' does not exist. Creating a new file.", filename);
+            File::create(filename)?;
+            return Ok(());
+        }
+
         // Try to open the file. I fit does not error
         let file = File::open(filename)?;
 
@@ -52,6 +61,7 @@ impl TaskMap {
         Ok(())
     }
 
+    /// Saves the current tasks in the TaskMap to a JSON file. The tasks are saved as an array of task objects.
     pub fn save(&self, filename: &str) -> Result<(), Box<dyn std::error::Error>> {
 
         let tasks: Vec<&Task> = self.map.values().collect();

@@ -5,6 +5,8 @@ use crate::task::Task;
 mod task;
 mod task_map;
 
+const file_path: &str = "db/task.json";
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let task1 = Task::new(
@@ -20,11 +22,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     );
 
     let mut task_map = TaskMap::new();
-    task_map.load("db/task.json")?;
+    task_map.load(file_path)?;
     task_map.add_task(task1);
     task_map.add_task(task2);
 
-    let task = task_map.get_task("Buy groceries");
+    let task = task_map.get_task("Personal_Buy groceries");
     task.unwrap().mark_completed();
 
     println!("Current tasks:");
@@ -32,7 +34,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("Task: {}, Due: {:?}, Completed: {}", name, task.get_due_date(), task.is_completed());
     }
 
-    task_map.save("db/task.json")?;
+    task_map.save(file_path)?;
 
     Ok(())
 
