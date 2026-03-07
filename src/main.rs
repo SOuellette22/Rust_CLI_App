@@ -1,26 +1,38 @@
-use std::fs::File;
-use chrono::{NaiveDate, Utc};
+use chrono::{NaiveDate};
+use crate::task_map::TaskMap;
+use crate::task::Task;
 
 mod task;
 mod task_map;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
 
-    let task1 = task::Task {
-        name: String::from("Finish Rust project"),
-        due_date: Some(NaiveDate::from_ymd_opt(2026,2,9).unwrap()),
-        completed: false,
-    };
+    let task1 = Task::new(
+        "Buy groceries".to_string(),
+        Some(NaiveDate::from_ymd(2024, 6, 30)),
+        false
+    );
 
-    let file = File::create("db/task.json")?;
+    let task2 = Task::new(
+        "Testing".to_string(),
+        Some(NaiveDate::from_ymd(2024, 6, 30)),
+        false
+    );
 
-    serde_json::to_writer(file, &task1)?;
+    let mut task_map = TaskMap::new();
+    task_map.load("db/task.json")?;
+    task_map.add_task(task1);
+    task_map.add_task(task2);
 
-    let json_file = File::open("db/task.json")?;
+    let task = task_map.get_task("Buy groceries");
+    task.unwrap().mark_completed();
 
-    let deserialized_task: task::Task = serde_json::from_reader(json_file)?;
+    println!("Current tasks:");
+    for (name, task) in &task_map.map {
+        println!("Task: {}, Due: {:?}, Completed: {}", name, task.get_due_date(), task.is_completed());
+    }
 
-    println!("Deserialized Task: {:?}", deserialized_task);
+    task_map.save("db/task.json")?;
 
     Ok(())
 
