@@ -1,12 +1,20 @@
 [
   {
-    "name": "Testing",
+    "name": "Buy groceries",
+    "subject": null,
+    "due_date": "2024-06-30",
+    "completed": true
+  },
+  {
+    "name": "Buy groceries",
+    "subject": "Personal",
     "due_date": "2024-06-30",
     "completed": false
   },
   {
-    "name": "Buy groceries",
+    "name": "Testing",
+    "subject": null,
     "due_date": "2024-06-30",
-    "completed": true
+    "completed": false
   }
 ]

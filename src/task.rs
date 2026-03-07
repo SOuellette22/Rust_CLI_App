@@ -4,17 +4,19 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Task {
     name: String,
+    subject: Option<String>,
     due_date: Option<NaiveDate>,
     completed: bool
 }
 
 impl Task {
 
-    pub fn new(name: String, due_date: Option<NaiveDate>, completed: bool) -> Self {
+    pub fn new(name: String, subject: Option<String>, due_date: Option<NaiveDate>) -> Self {
         Task {
             name,
+            subject,
             due_date,
-            completed
+            completed: false
         }
     }
 
@@ -22,6 +24,10 @@ impl Task {
 
     pub fn get_name(&self) -> String {
         self.name.clone()
+    }
+
+    pub fn get_subject(&self) -> Option<String> {
+        self.subject.clone()
     }
 
     pub fn get_due_date(&self) -> Option<NaiveDate> {

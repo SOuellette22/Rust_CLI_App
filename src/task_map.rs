@@ -18,7 +18,14 @@ impl TaskMap {
 
     /// Adds a task to the TaskMap, using the task's name as the key.
     pub fn add_task(&mut self, task: Task) {
-        self.map.insert(task.get_name().clone().parse().unwrap(), task);
+        // Create a key by combining the task's subject (if it exists) and name
+        let mut key = task.get_subject().unwrap_or_else(|| "".to_string());
+        if !key.is_empty() {
+            key = format!("{}_{}", key, task.get_name());
+        } else {
+            key = task.get_name().clone();
+        }
+        self.map.insert(key, task);
     }
 
     /// Retrieves a reference to a task by its name. Returns None if the task does not exist in the map.
