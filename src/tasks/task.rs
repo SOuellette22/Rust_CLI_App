@@ -49,12 +49,7 @@ impl Task {
 
     /// Marks the task as completed.
     pub fn mark_completed(&mut self) {
-        self.completed = true;
-    }
-
-    /// Marks the task as incomplete.
-    pub fn mark_incomplete(&mut self) {
-        self.completed = false;
+        self.completed = !self.completed;
     }
 
 

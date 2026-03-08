@@ -19,14 +19,14 @@ impl TaskMap {
 
     /// Adds a task to the TaskMap, using the task's name as the key.
     pub fn add_task(&mut self, task: Task) {
-        // Create a key by combining the task's subject (if it exists) and name
-        let mut key = task.get_subject().unwrap_or_else(|| "".to_string());
-        if !key.is_empty() {
-            key = format!("{}_{}", key, task.get_name());
+        // Check if a task with the same name already exists in the map.
+        //  If it does, print a warning message and overwrite the existing task.
+        //  Otherwise, add the new task to the map.
+        if self.map.contains_key(&task.get_name()) {
+            println!("Task with name '{}' already exists. Overwriting existing task.", task.get_name());
         } else {
-            key = task.get_name().clone();
+            self.map.insert(task.get_name(), task);
         }
-        self.map.insert(key, task);
     }
 
     /// Retrieves a reference to a task by its name. Returns None if the task does not exist in the map.
@@ -71,7 +71,8 @@ impl TaskMap {
         Ok(())
     }
 
-    /// Converts the TaskMap to a formatted string for display purposes. The string includes a header and a row for each task, showing the name, subject, due date, and completion status.
+    /// Converts the TaskMap to a formatted string for display purposes.
+    ///     The string includes a header and a row for each task, showing the name, subject, due date, and completion status.
     pub fn to_string(&self) -> String {
         let mut result = String::new();
         let name_col_width = self.map.keys().map(|k| k.len()).max().unwrap_or(18).max(18) + 2;
