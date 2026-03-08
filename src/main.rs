@@ -23,24 +23,27 @@ struct Cli {
 #[derive(Subcommand, Debug)]
 enum Command {
 
+    // The "add" command allows the user to add a new task to the task list.
     #[command(name = "add", about = "Add a new task to the task list")]
     Add {
-        #[arg(short, long)]
+        #[arg(short, long, help = "The name of the task to be added")]
         name: String,
 
-        #[arg(short, long)]
+        #[arg(short, long, help = "The subject or category of the task (optional)")]
         subject: Option<String>,
 
-        #[arg(short, long)]
+        #[arg(short, long, help = "The due date for the task in YYYY-MM-DD format (optional)")]
         due_date: Option<NaiveDate>,
     },
 
+    // The "list" command allows the user to view all tasks currently in the task list.
     #[command(name = "list", about = "List all tasks in the task list")]
     List,
 
+    // The "complete" command allows the user to mark a specific task as completed by providing its name.
     #[command(name = "complete", about = "Mark a task as completed")]
     Complete {
-        #[arg(short, long)]
+        #[arg(short, long, help = "The name of the task to be marked as completed")]
         name: String,
     },
 }
