@@ -70,4 +70,43 @@ impl TaskMap {
         fs::write(filename, json)?;
         Ok(())
     }
+
+    /// Converts the TaskMap to a formatted string for display purposes. The string includes a header and a row for each task, showing the name, subject, due date, and completion status.
+    pub fn to_string(&self) -> String {
+        let mut result = String::new();
+        let name_col_width = self.map.keys().map(|k| k.len()).max().unwrap_or(18).max(18) + 2;
+        result.push_str(
+            &format!(
+                "|{:^name_col_width$}|{:^20}|{:^20}|{:^20}|\n",
+                "Name",
+                "Subject",
+                "Due Date",
+                "Completed",
+                name_col_width = name_col_width
+            ).as_str()
+        );
+        result.push_str(
+            format!(
+                "|{:^name_col_width$}|{:^20}|{:^20}|{:^20}|\n",
+                "-".repeat(name_col_width),
+                "-".repeat(20),
+                "-".repeat(20),
+                "-".repeat(20),
+                name_col_width = name_col_width
+            ).as_str()
+        );
+        for (_, task) in &self.map {
+            result.push_str(
+                &format!(
+                    "|{:^name_col_width$}|{:^20}|{:^20}|{:^20}|\n",
+                    task.get_name(),
+                    task.get_subject().unwrap_or_else(|| "None".to_string()),
+                    task.get_due_date().map_or_else(|| "None".to_string(), |d| d.to_string()),
+                    if task.is_completed() { "Yes" } else { "No" },
+                    name_col_width = name_col_width
+                ).as_str()
+            );
+        }
+        result
+    }
 }

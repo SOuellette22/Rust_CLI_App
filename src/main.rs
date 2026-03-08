@@ -29,9 +29,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     task.unwrap().mark_completed();
 
     println!("Current tasks:");
-    for (name, task) in &task_map.map {
-        println!("Task: {}, Due: {:?}, Completed: {}", name, task.get_due_date(), task.is_completed());
-    }
+    println!("{}", task_map.to_string());
 
     task_map.save(FILE_PATH)?;
 
