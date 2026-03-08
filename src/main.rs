@@ -1,9 +1,8 @@
 use chrono::{NaiveDate};
-use crate::task_map::TaskMap;
-use crate::task::Task;
+use crate::tasks::task_map::TaskMap;
+use crate::tasks::task::Task;
 
-mod task;
-mod task_map;
+mod tasks;
 
 const FILE_PATH: &str = "db/task.json";
 

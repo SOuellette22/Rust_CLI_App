@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::fs;
 use std::fs::File;
 use std::path::Path;
-use crate::task::Task;
+use crate::tasks::task::Task;
 
 /// A structure to hold a map of tasks, allowing for easy retrieval and management.
 pub struct TaskMap {
