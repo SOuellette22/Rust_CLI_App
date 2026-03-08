@@ -1,2 +1,8 @@
 /target
 /db
+
+.idea
+
+*.json
+*.log
+*.env

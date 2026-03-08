@@ -11,13 +11,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let task1 = Task::new(
         "Buy groceries".to_string(),
         Some("Personal".to_string()),
-        Some(NaiveDate::from_ymd(2024, 6, 30))
+        Some(NaiveDate::from_ymd_opt(2024, 6, 30).unwrap())
     );
 
     let task2 = Task::new(
         "Testing".to_string(),
         None,
-        Some(NaiveDate::from_ymd(2024, 6, 30)),
+        Some(NaiveDate::from_ymd_opt(2024, 6, 30).unwrap()),
     );
 
     let mut task_map = TaskMap::new();
