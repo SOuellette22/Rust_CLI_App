@@ -1,4 +1,5 @@
 use chrono::{NaiveDate};
+use clap::{Parser, Subcommand};
 use crate::tasks::task_map::TaskMap;
 use crate::tasks::task::Task;
 
@@ -6,33 +7,92 @@ mod tasks;
 
 const FILE_PATH: &str = "db/task.json";
 
+#[derive(Parser, Debug)]
+#[command(
+    name = "Task Manager",
+    version = "1.0",
+    author = "Sean Ouellette",
+    about = "A simple task management CLI application")
+]
+struct Cli {
+
+    #[command(subcommand)]
+    command: Command,
+}
+
+#[derive(Subcommand, Debug)]
+enum Command {
+
+    #[command(name = "add", about = "Add a new task to the task list")]
+    Add {
+        #[arg(short, long)]
+        name: String,
+
+        #[arg(short, long)]
+        subject: Option<String>,
+
+        #[arg(short, long)]
+        due_date: Option<NaiveDate>,
+    },
+
+    #[command(name = "list", about = "List all tasks in the task list")]
+    List,
+
+    #[command(name = "complete", about = "Mark a task as completed")]
+    Complete {
+        #[arg(short, long)]
+        name: String,
+    },
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
 
-    let task1 = Task::new(
-        "Buy groceries".to_string(),
-        Some("Personal".to_string()),
-        Some(NaiveDate::from_ymd_opt(2024, 6, 30).unwrap())
-    );
+    let cli = Cli::parse();
 
-    let task2 = Task::new(
-        "Testing".to_string(),
-        None,
-        Some(NaiveDate::from_ymd_opt(2024, 6, 30).unwrap()),
-    );
-
-    let mut task_map = TaskMap::new();
-    task_map.load(FILE_PATH)?;
-    task_map.add_task(task1);
-    task_map.add_task(task2);
-
-    let task = task_map.get_task("Personal_Buy groceries");
-    task.unwrap().mark_completed();
-
-    println!("Current tasks:");
-    println!("{}", task_map.to_string());
-
-    task_map.save(FILE_PATH)?;
+    match cli.command {
+        Command::Add { name, subject, due_date } => {
+            // Create a new Task object with the provided name, subject, and due date.
+            let task = Task::new(name, subject, due_date);
+            
+            // Load the existing tasks from the JSON file into a TaskMap. 
+            //  If the file doesn't exist or is empty, start with an empty TaskMap.
+            let mut task_map = TaskMap::new();
+            task_map.load(FILE_PATH)?;
+            
+            // Add the new task to the TaskMap and save the updated task list back to the JSON file.
+            task_map.add_task(task);
+            task_map.save(FILE_PATH)?;
+        },
+        
+        Command::List => {
+            // Load the existing tasks from the JSON file into a TaskMap. 
+            //  If the file doesn't exist or is empty, start with an empty TaskMap.
+            let mut task_map = TaskMap::new();
+            task_map.load(FILE_PATH)?;
+            
+            // Print the current tasks in the TaskMap. 
+            //  If there are no tasks, print a message indicating that the task list is empty.
+            println!("Current tasks:");
+            println!("{}", task_map.to_string());
+        },
+        
+        Command::Complete { name } => {
+            // Load the existing tasks from the JSON file into a TaskMap. 
+            //  If the file doesn't exist or is empty, start with an empty TaskMap.
+            let mut task_map = TaskMap::new();
+            task_map.load(FILE_PATH)?;
+            
+            // Attempt to find the task by name. If found, mark it as completed and save the updated task list. 
+            //  If not found, print an error message.
+            if let Some(task) = task_map.get_task(&name) {
+                task.mark_completed();
+                task_map.save(FILE_PATH)?;
+                println!("Task '{}' marked as completed.", name);
+            } else {
+                println!("Task '{}' not found.", name);
+            }
+        },
+    }
 
     Ok(())
-
 }
