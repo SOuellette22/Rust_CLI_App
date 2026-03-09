@@ -3,6 +3,5 @@
 
 .idea
 
-*.json
 *.log
 *.env
